@@ -2,9 +2,9 @@
 
 Gradient boosting can be used to make a more robust learner and improve predictions. With gradient boosting, a second model is trained on the residuals of the first model, improving the chances that the second model is better than the first. 
 
-In this project, I present code that builds off of the functions for Alex Gramfort's approach to Lowess from before.
+In this project, I present code that builds off of the functions for Alex Gramfort's approach to Lowess from before, culminating in a gradient boosting regressor that can be customized to achieve the best mse results. This regressor is then put to the test with real data.
 
-### Code Implementation
+## Code Implementation
 
 Import Statements:
 
@@ -238,6 +238,14 @@ MSE of 16.6134
 
 Even with just a few customization options, the number of possible combinations is massive. It's fun and fascinating to play around with the options and see the resulting mean squared error.
 
+```Python
+
+```
+
+```Python
+
+```
+
 Next, we move onto a concrete dataset. After playing around with different options for regressors and kernels, the lowest mse I could achieve was with a Quartic kernel and a Random Forest Regressor as the second model.
 
 ```Python
@@ -283,12 +291,7 @@ print('The Cross-validated Mean Squared Error for Gradient Boosting Regression i
 print('The Cross-validated Mean Squared Error for Random Forest is : '+str(np.mean(mse_rf)))
 ```
 When I run the code, I get this output: \
+The Cross-validated Mean Squared Error for Gradient Boosting Regression is : 41.572110590798744 \
+The Cross-validated Mean Squared Error for Random Forest is : 45.42591312322211
 
-
-```Python
-
-```
-
-```Python
-
-```
+We can see that we have achieved a lower mse with the gradient boosting than without. Thus, the gradient boosting method is a stronger learner than the "weak" learner Random Forest and will therefore make stronger predictions. This robust approach is an excellent tool to have in your belt.
