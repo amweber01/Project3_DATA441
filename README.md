@@ -153,8 +153,30 @@ class Lowess:
         return self
 ```
 
-```Python
+## Boosted Regressor Function
 
+This new function defines the boosted regressor. It allows the user to choose between three different regressors for the second model: Lowess (default), Random Forest Regressor, and Decision Tree Regressor. The user can specify values for the number of estimators and max depth for Random Forest, and the max depth for Decision Tree. This is also where the user can change which kind of kernel is used by the Lowess regression function (the default is Epanechnikov).
+
+```Python
+def boosted_lwr(x, y, xnew, mod2 = 'Lowess', f=1/3, iter=2, n_estimators=200, max_depth=5, intercept=True, kernel=Epanechnikov):
+
+  model1 = Lowess(f=f,iter=iter,intercept=intercept,kernel=kernel)
+
+  if mod2 == 'RandomForestRegressor':
+    model2 = RandomForestRegressor(n_estimators=n_estimators, max_depth=max_depth)
+  elif mod2 == 'DecisionTreeRegressor':
+    model2 = DecisionTreeRegressor(max_depth=max_depth)
+  else:
+    model2 = Lowess(f=f,iter=iter,intercept=intercept,kernel=kernel)
+
+  # for training the boosted method we use x and y
+  model1.fit(x,y)
+  residuals1 = y - model1.predict(x)
+
+  model2.fit(x,residuals1)
+
+  output = model1.predict(xnew) + model2.predict(xnew)
+  return output 
 ```
 
 ```Python
