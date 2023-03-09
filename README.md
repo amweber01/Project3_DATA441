@@ -183,7 +183,7 @@ def boosted_lwr(x, y, xnew, mod2 = 'Lowess', f=1/3, iter=2, n_estimators=200, ma
 
 ## Testing on Real Datasets
 
-The next step is to test the gradient boosting regressor on some real data. Below I demonstrate a few of the customizations available to the user below, seeing how some choices may impact the mean squared error.
+The next step is to test the gradient boosting regressor on some real data. Below I demonstrate a few of the customizations available to the user below, seeing how some choices may impact the mean squared error. We start with a dataset about cars.
 
 ```Python
 car_data = pd.read_csv('drive/MyDrive/DATA441/data/cars.csv')
@@ -237,6 +237,53 @@ mse(ytest,yhat)
 MSE of 16.6134
 
 Even with just a few customization options, the number of possible combinations is massive. It's fun and fascinating to play around with the options and see the resulting mean squared error.
+
+Next, we move onto a concrete dataset. After playing around with different options for regressors and kernels, the lowest mse I could achieve was with a Quartic kernel and a Random Forest Regressor as the second model.
+
+```Python
+concrete_data = pd.read_csv('drive/MyDrive/DATA441/data/concrete.csv')
+x = concrete_data.loc[:,'cement':'age'].values
+y = concrete_data['strength'].values
+scale = StandardScaler()
+xtrain, xtest, ytrain, ytest = tts(x,y,test_size=0.3,shuffle=True,random_state=123)
+xtrain = scale.fit_transform(xtrain)
+xtest = scale.transform(xtest)
+yhat = boosted_lwr(xtrain, ytrain, xtest, mod2='RandomForestRegressor', f=25/len(xtrain), iter=1, intercept=True, kernel=Quartic)
+mse(ytest,yhat)
+```
+
+This model produces an mse of 44.0735. The next step is to compare this method of gradient boosting with a different regressor, such as just Random Forest.
+
+## Complete KFold Crossvalidation
+
+To be confident that the gradient boosting method is both effective on its own and a more optimal choice than a lone regressor, a complete KFold crossvalidation comparing regressors can be implemented. The code below compares the gradient boosting regressor with concrete data from above with Random Forest.
+
+```Python
+mse_lwr = []
+mse_rf = []
+kf = KFold(n_splits=10,shuffle=True,random_state=1234)
+model_rf = RandomForestRegressor(n_estimators=200,max_depth=5)
+
+for idxtrain, idxtest in kf.split(x):
+  xtrain = x[idxtrain]
+  ytrain = y[idxtrain]
+  ytest = y[idxtest]
+  xtest = x[idxtest]
+  xtrain = scale.fit_transform(xtrain)
+  xtest = scale.transform(xtest)
+
+  yhat_lw = boosted_lwr(xtrain, ytrain, xtest, mod2='RandomForestRegressor', f=25/len(xtrain), iter=1, intercept=True, kernel=Quartic)
+  
+  model_rf.fit(xtrain,ytrain)
+  yhat_rf = model_rf.predict(xtest)
+
+  mse_lwr.append(mse(ytest,yhat_lw))
+  mse_rf.append(mse(ytest,yhat_rf))
+print('The Cross-validated Mean Squared Error for Gradient Boosting Regression is : '+str(np.mean(mse_lwr)))
+print('The Cross-validated Mean Squared Error for Random Forest is : '+str(np.mean(mse_rf)))
+```
+When I run the code, I get this output: \
+
 
 ```Python
 
