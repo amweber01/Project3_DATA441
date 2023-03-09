@@ -183,7 +183,7 @@ def boosted_lwr(x, y, xnew, mod2 = 'Lowess', f=1/3, iter=2, n_estimators=200, ma
 
 ## Testing on Real Datasets
 
-The next step is to test the gradient boosting regressor on some real data. Below I demonstrate a few of the customizations available to the user below, seeing how some choices may impact the mean squared error. We start with a dataset about cars.
+The next step is to test the gradient boosting regressor on some real data. Below, I demonstrate a few of the customizations available to the user below, seeing how some choices may impact the mean squared error. We start with a dataset about cars.
 
 ```Python
 car_data = pd.read_csv('drive/MyDrive/DATA441/data/cars.csv')
@@ -238,15 +238,7 @@ MSE of 16.6134
 
 Even with just a few customization options, the number of possible combinations is massive. It's fun and fascinating to play around with the options and see the resulting mean squared error.
 
-```Python
-
-```
-
-```Python
-
-```
-
-Next, we move onto a concrete dataset. After playing around with different options for regressors and kernels, the lowest mse I could achieve was with a Quartic kernel and a Random Forest Regressor as the second model.
+Next, we move on to a concrete dataset. After playing around with different options for regressors and kernels, the lowest mse I could achieve was with a Quartic kernel and a Random Forest Regressor as the second model.
 
 ```Python
 concrete_data = pd.read_csv('drive/MyDrive/DATA441/data/concrete.csv')
