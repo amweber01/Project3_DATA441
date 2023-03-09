@@ -183,6 +183,8 @@ def boosted_lwr(x, y, xnew, mod2 = 'Lowess', f=1/3, iter=2, n_estimators=200, ma
 
 ## Testing on Real Datasets
 
+The next step is to test the gradient boosting regressor on some real data. Below I demonstrate a few of the customizations available to the user below, seeing how some choices may impact the mean squared error.
+
 ```Python
 car_data = pd.read_csv('drive/MyDrive/DATA441/data/cars.csv')
 x = car_data.loc[:,'CYL':'WGT'].values
@@ -220,13 +222,21 @@ mse(ytest,yhat)
 
 After running these cells, I find that the Tricubic kernel has the lowest mse of 16.3085, narrowly beating the Quartic kernel which had an mse of 16.3261.
 
-```Python
-
-```
+Below are two cell blocks that change the second model in the boosted regression. These produce mean squared errors that are comparable to the Tricubic kernel above, but neither is actually lower.
 
 ```Python
-
+yhat = boosted_lwr(xtrain, ytrain, xtest, mod2='RandomForestRegressor', max_depth=3, n_estimators=200, f=1/3, iter=3, intercept=True, kernel=Tricubic)
+mse(ytest,yhat)
 ```
+MSE of 17.4098
+
+```Python
+yhat = boosted_lwr(xtrain, ytrain, xtest, mod2='DecisionTreeRegressor', max_depth=1, f=1/3, iter=3, intercept=True, kernel=Tricubic)
+mse(ytest,yhat)
+```
+MSE of 16.6134
+
+Even with just a few customization options, the number of possible combinations is massive. It's fun and fascinating to play around with the options and see the resulting mean squared error.
 
 ```Python
 
