@@ -4,6 +4,8 @@ Gradient boosting can be used to make a more robust learner and improve predicti
 
 In this project, I present code that builds off of the functions for Alex Gramfort's approach to Lowess from before.
 
+### Code Implementation
+
 Import Statements:
 
 ```Python
@@ -153,7 +155,7 @@ class Lowess:
         return self
 ```
 
-## Boosted Regressor Function
+### Boosted Regressor Function
 
 This new function defines the boosted regressor. It allows the user to choose between three different regressors for the second model: Lowess (default), Random Forest Regressor, and Decision Tree Regressor. The user can specify values for the number of estimators and max depth for Random Forest, and the max depth for Decision Tree. This is also where the user can change which kind of kernel is used by the Lowess regression function (the default is Epanechnikov).
 
@@ -177,6 +179,53 @@ def boosted_lwr(x, y, xnew, mod2 = 'Lowess', f=1/3, iter=2, n_estimators=200, ma
 
   output = model1.predict(xnew) + model2.predict(xnew)
   return output 
+```
+
+## Testing on Real Datasets
+
+```Python
+car_data = pd.read_csv('drive/MyDrive/DATA441/data/cars.csv')
+x = car_data.loc[:,'CYL':'WGT'].values
+y = car_data['MPG'].values
+scale = StandardScaler()
+xtrain, xtest, ytrain, ytest = tts(x,y,test_size=0.3,shuffle=True,random_state=123)
+xtrain = scale.fit_transform(xtrain)
+xtest = scale.transform(xtest)
+```
+The next four code blocks can be run sequentially to get an idea about what kernel might be the best choice for this regression. Note that in each case, Lowess is being used for both models with constant f and iter values.
+
+Epanechnikov:
+```Python
+yhat = boosted_lwr(xtrain, ytrain, xtest, f=1/3, iter=3, intercept=True)
+mse(ytest,yhat)
+```
+
+Tricubic:
+```Python
+yhat = boosted_lwr(xtrain, ytrain, xtest, f=1/3, iter=3, intercept=True, kernel=Tricubic)
+mse(ytest,yhat)
+```
+
+Gaussian:
+```Python
+yhat = boosted_lwr(xtrain, ytrain, xtest, f=1/3, iter=3, intercept=True, kernel=Gaussian)
+mse(ytest,yhat)
+```
+
+Quartic:
+```Python
+yhat = boosted_lwr(xtrain, ytrain, xtest, f=1/3, iter=3, intercept=True, kernel=Quartic)
+mse(ytest,yhat)
+```
+
+After running these cells, I find that the Tricubic kernel has the lowest mse of 16.3085, narrowly beating the Quartic kernel which had an mse of 16.3261.
+
+```Python
+
+```
+
+```Python
+
 ```
 
 ```Python
