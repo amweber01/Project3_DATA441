@@ -46,7 +46,7 @@ def Epanechnikov(w):
   return np.where(w>1,0,3/4*(1-w**2)) 
 ```
 
-Next come the definitions for a distance function, the lowess regressor, and then a class definition for lowess that allows for ScikitLearn compatibility.
+Next come the definitions for a distance function, the Lowess regressor, and then a class definition for Lowess that allows for ScikitLearn compatibility.
 
 ```Python
 def dist(u,v):
@@ -171,7 +171,6 @@ def boosted_lwr(x, y, xnew, mod2 = 'Lowess', f=1/3, iter=2, n_estimators=200, ma
   else:
     model2 = Lowess(f=f,iter=iter,intercept=intercept,kernel=kernel)
 
-  # for training the boosted method we use x and y
   model1.fit(x,y)
   residuals1 = y - model1.predict(x)
 
@@ -254,9 +253,9 @@ mse(ytest,yhat)
 
 This model produces an mse of 44.0735. The next step is to compare this method of gradient boosting with a different regressor, such as just Random Forest.
 
-## Complete KFold Crossvalidation
+## Complete KFold Cross-validation
 
-To be confident that the gradient boosting method is both effective on its own and a more optimal choice than a lone regressor, a complete KFold crossvalidation comparing regressors can be implemented. The code below compares the gradient boosting regressor with concrete data from above with Random Forest.
+To be confident that the gradient boosting method is both effective on its own and a more optimal choice than a lone regressor, a complete KFold cross-validation comparing regressors can be implemented. The code below compares the gradient boosting regressor with concrete data from above with Random Forest.
 
 ```Python
 mse_lwr = []
@@ -286,4 +285,4 @@ When I run the code, I get this output: \
 The Cross-validated Mean Squared Error for Gradient Boosting Regression is : 41.572110590798744 \
 The Cross-validated Mean Squared Error for Random Forest is : 45.42591312322211
 
-We can see that we have achieved a lower mse with the gradient boosting than without. Thus, the gradient boosting method is a stronger learner than the "weak" learner Random Forest and will therefore make stronger predictions. This robust approach is an excellent tool to have in your belt.
+We can see that we have achieved a lower mse with the gradient boosting than without. Thus, the gradient boosting method is a stronger learner than the "weak" learner Random Forest and will therefore make stronger predictions in this instance. It may be challenging sometimes to find the optimal hyperparameters for gradient boosting, but this robust approach is an excellent tool to be able to utilize.
